@@ -24,6 +24,7 @@ public class RestfulApiNamingInspector {
     private static final Pattern UPPERCASE_PATTERN = Pattern.compile(".*[A-Z].*");
     private static final Pattern UNDERSCORE_PATTERN = Pattern.compile(".*_.*");
     private static final Pattern VERB_PREFIX_PATTERN = Pattern.compile(".*/(get|add|create|update|delete|remove|list)[A-Z]?.*");
+    private static final Pattern PATH_VARIABLE_PATTERN = Pattern.compile("\\{[^/}]+}");
     private static final Set<String> ALLOWED_NON_RESOURCE_PATHS = Set.of(
             "/api/auth/login",
             "/api/auth/logout",
@@ -91,15 +92,23 @@ public class RestfulApiNamingInspector {
             return;
         }
 
-        String normalized = path.toLowerCase(Locale.ROOT);
-        boolean invalid = !path.startsWith("/api")
-                || UPPERCASE_PATTERN.matcher(path).matches()
-                || UNDERSCORE_PATTERN.matcher(path).matches()
-                || (!ALLOWED_NON_RESOURCE_PATHS.contains(normalized) && VERB_PREFIX_PATTERN.matcher(path).matches());
+        String inspectPath = normalizePathVariables(path);
+        String normalized = inspectPath.toLowerCase(Locale.ROOT);
+        boolean invalid = !inspectPath.startsWith("/api")
+                || UPPERCASE_PATTERN.matcher(inspectPath).matches()
+                || UNDERSCORE_PATTERN.matcher(inspectPath).matches()
+                || (!ALLOWED_NON_RESOURCE_PATHS.contains(normalized) && VERB_PREFIX_PATTERN.matcher(inspectPath).matches());
 
         if (invalid) {
             invalidPaths.add("- " + describe(path, mappingInfo));
         }
+    }
+
+    /**
+     * 路径变量名属于 Java/Spring 绑定细节，不参与 URL 风格检查。
+     */
+    private String normalizePathVariables(String path) {
+        return PATH_VARIABLE_PATTERN.matcher(path).replaceAll("{}");
     }
 
     /**
