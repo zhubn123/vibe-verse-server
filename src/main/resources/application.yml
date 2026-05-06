@@ -4,14 +4,8 @@ server:
 spring:
   application:
     name: vibe-verse-server
-  config:
-    import: optional:classpath:application-local.yml
-  # DataSource Config
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL:${local.datasource.url}}
-    username: ${DB_USERNAME:${local.datasource.username}}
-    password: ${DB_PASSWORD:${local.datasource.password}}
+  profiles:
+    active: dev
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/db.changelog-master.yaml
