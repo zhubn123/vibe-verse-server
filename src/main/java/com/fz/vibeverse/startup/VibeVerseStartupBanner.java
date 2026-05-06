@@ -28,17 +28,16 @@ public class VibeVerseStartupBanner {
     public void onApplicationReady() {
         log.info("""
 
-                 /\\
-                /  \\      V I B E - V E R S E
-               / /\\ \\     system platform foundation
-              / ____ \\
-             /_/    \\_\\
+              +--------------------------------------+
+              |          STARTUP SUCCESS            |
+              |      Vibe Verse Server is ready     |
+              +--------------------------------------+
 
              application : {}
              local       : http://127.0.0.1:{}
              swagger     : http://127.0.0.1:{}/swagger-ui.html
 
-             status      : ready
+             status      : started successfully
                \s""",
                 applicationName,
                 serverPort,
