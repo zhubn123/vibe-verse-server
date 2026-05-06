@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.berlin.aetherflow.wms.mapper.InventoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.berlin.aetherflow.wms.domain.entity.Inventory">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="warehouseId" column="warehouse_id" jdbcType="BIGINT"/>
+            <result property="locationId" column="location_id" jdbcType="BIGINT"/>
+            <result property="materialId" column="material_id" jdbcType="BIGINT"/>
+            <result property="batchNo" column="batch_no" jdbcType="VARCHAR"/>
+            <result property="productionDate" column="production_date" jdbcType="DATE"/>
+            <result property="expiryDate" column="expiry_date" jdbcType="DATE"/>
+            <result property="inboundTime" column="inbound_time" jdbcType="TIMESTAMP"/>
+            <result property="quantity" column="quantity" jdbcType="DECIMAL"/>
+            <result property="lockedQuantity" column="locked_quantity" jdbcType="DECIMAL"/>
+            <result property="frozenQuantity" column="frozen_quantity" jdbcType="DECIMAL"/>
+            <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,warehouse_id,location_id,
+        material_id,batch_no,production_date,
+        expiry_date,inbound_time,quantity,locked_quantity,
+        frozen_quantity,
+        create_by,create_time,update_by,
+        update_time
+    </sql>
+</mapper>

@@ -1,0 +1,30 @@
+# WMS module changelog entry point.
+# Add new WMS migrations from db/changelog/sql/wms here.
+databaseChangeLog:
+  - include:
+      file: db/changelog/sql/wms/20260502-1445-wms-outbound-allocation-codex.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260502-1530-wms-batch-inventory-codex.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260502-1810-wms-stock-freeze-codex.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260502-2310-wms-putaway-task-codex.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260502-2340-wms-stock-count-codex.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260502-2355-wms-picking-task-codex.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260502-2435-wms-transfer-order-codex.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260504-1456-wms-wave-stock-count-review-thread-a.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/wms/20260505-1406-wms-wave-picking-exception-thread-a.sql
+      relativeToChangelogFile: false

@@ -1,0 +1,77 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: AetherFlow-server
+  config:
+    import: optional:classpath:application-local.yml
+  # DataSource Config
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:${local.datasource.url}}
+    username: ${DB_USERNAME:${local.datasource.username}}
+    password: ${DB_PASSWORD:${local.datasource.password}}
+  data:
+    redis:
+      host: ${REDIS_HOST:${local.redis.host:127.0.0.1}}
+      port: ${REDIS_PORT:${local.redis.port:6379}}
+      password: ${REDIS_PASSWORD:${local.redis.password:}}
+      database: ${REDIS_DATABASE:${local.redis.database:0}}
+      timeout: ${REDIS_TIMEOUT:2s}
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    # 首次接入老库时使用“前置校验 + 幂等 SQL”，避免破坏现网数据
+    clear-checksums: false
+    drop-first: false
+
+############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
+sa-token:
+  # token 名称（当前前端统一使用 Authorization: Bearer {token}）
+  token-name: Authorization
+  # token 前缀（注意最后有一个空格）
+  token-prefix: Bearer
+  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
+  timeout: 2592000
+  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
+  active-timeout: -1
+  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用同一个 token （为 true 时所有登录共用同一个 token, 为 false 时每次登录新建一个 token）
+  is-share: false
+  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
+
+aether-flow:
+  auth:
+    refresh-token:
+      # 无状态 refresh token 签名密钥，生产环境请通过环境变量覆盖
+      secret: ${AUTH_REFRESH_TOKEN_SECRET:aether-flow-local-refresh-secret}
+      ttl-seconds: ${AUTH_REFRESH_TOKEN_TTL_SECONDS:604800}
+  wms:
+    option-cache:
+      redis-ttl: ${WMS_OPTION_CACHE_REDIS_TTL:10m}
+      redis-empty-ttl: ${WMS_OPTION_CACHE_REDIS_EMPTY_TTL:30s}
+      redis-failure-backoff: ${WMS_OPTION_CACHE_REDIS_FAILURE_BACKOFF:30s}
+    outbound-confirm-lock:
+      ttl: ${WMS_OUTBOUND_CONFIRM_LOCK_TTL:15s}
+      redis-failure-backoff: ${WMS_OUTBOUND_CONFIRM_LOCK_REDIS_FAILURE_BACKOFF:30s}
+    expired-inventory-freeze:
+      enabled: ${WMS_EXPIRED_INVENTORY_FREEZE_ENABLED:true}
+      cron: "${WMS_EXPIRED_INVENTORY_FREEZE_CRON:0 15 1 * * *}"
+
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: info
+    com.berlin.aetherflow: info
+  pattern:
+    console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(%-5level) %clr([%thread]){faint} %clr(%logger{36}){cyan} - %msg%n"

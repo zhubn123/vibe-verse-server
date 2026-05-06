@@ -1,0 +1,93 @@
+package com.berlin.aetherflow.wms.constant;
+
+/**
+ * BizCodeTypeConst
+ *
+ * @author zhubn
+ * @date 2026/4/17
+ */
+public interface BizCodeTypeConst {
+    /**
+     * 入库单编码 - INBOUND ORDER
+     * 用于标识货物进入仓库的业务单据
+     */
+    String INBOUND_ORDER = "IO";
+
+    /**
+     * 出库单编码 - OUTBOUND ORDER
+     * 用于标识货物离开仓库的业务单据
+     */
+    String OUTBOUND_ORDER = "OO";
+
+    /**
+     * 仓库编码 - WAREHOUSE
+     * 用于标识具体的仓库或存储区域
+     */
+    String WAREHOUSE = "WH";
+
+    /**
+     * 区域编码 - AREA
+     * 用于标识仓库内的业务分区（收货区/质检区/存储区等）
+     */
+    String AREA = "AR";
+
+    /**
+     * 库位编码 - LOCATION
+     * 用于标识仓库内的具体存储位置
+     */
+    String LOCATION = "LC";
+
+    /**
+     * 物料编码 - MATERIAL
+     * 用于标识被管理的货物种类
+     */
+    String MATERIAL = "MT";
+
+    /**
+     * 采购入库单 - PURCHASE INBOUND
+     * 专门用于采购业务的入库单据
+     */
+    String PURCHASE_INBOUND = "PI";
+
+    /**
+     * 销售出库单 - SALES OUTBOUND
+     * 专门用于销售业务的出库单据
+     */
+    String SALES_OUTBOUND = "SO";
+
+    /**
+     * 调拨单编码 - TRANSFER ORDER
+     * 用于仓库之间或库位之间的货物转移
+     */
+    String TRANSFER_ORDER = "TO";
+
+    /**
+     * 库存调整单编码 - INVENTORY ADJUSTMENT
+     * 用于人工库存增减调整业务的单据
+     */
+    String INVENTORY_ADJUSTMENT = "IA";
+
+    /**
+     * 上架任务编码 - PUTAWAY TASK
+     * 用于入库确认后的上架执行任务
+     */
+    String PUTAWAY_TASK = "PT";
+
+    /**
+     * 拣货任务编码 - PICKING TASK
+     * 用于出库分配后的拣货执行任务
+     */
+    String PICKING_TASK = "PK";
+
+    /**
+     * 盘点单编码 - INVENTORY COUNT
+     * 用于库存盘点业务的单据
+     */
+    String INVENTORY_COUNT = "IC";
+
+    /**
+     * 退货入库单 - RETURN INBOUND
+     * 客户退货或不合格品返库的单据
+     */
+    String RETURN_INBOUND = "RI";
+}

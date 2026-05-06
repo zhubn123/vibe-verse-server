@@ -1,0 +1,38 @@
+target/
+build/
+
+# Local config and machine-specific notes
+src/main/resources/application-local.yml
+docs/local/
+
+# IDEs
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+
+# Eclipse / STS
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# Logs and temp files
+logs/
+*.log
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db

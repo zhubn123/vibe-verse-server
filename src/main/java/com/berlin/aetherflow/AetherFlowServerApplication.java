@@ -1,0 +1,15 @@
+package com.berlin.aetherflow;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableScheduling
+public class AetherFlowServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AetherFlowServerApplication.class, args);
+    }
+
+}
