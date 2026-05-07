@@ -280,6 +280,7 @@ public class AuthServiceImpl implements AuthService {
         loginVo.setToken(StpUtil.getTokenValue());
         loginVo.setRefreshToken(issueRefreshToken(user.getId()));
         loginVo.setRoles(getRoleKeysByUserId(user.getId()));
+        loginVo.setPermissionKeys(getPermissionKeysByUserId(user.getId()));
         loginVo.setUserInfo(buildUserInfo(user));
         return loginVo;
     }

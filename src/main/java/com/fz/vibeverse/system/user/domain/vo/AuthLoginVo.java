@@ -34,4 +34,9 @@ public class AuthLoginVo implements Serializable {
      * 角色列表（role_key）
      */
     private List<String> roles;
+
+    /**
+     * 权限列表（perm_key）
+     */
+    private List<String> permissionKeys;
 }
