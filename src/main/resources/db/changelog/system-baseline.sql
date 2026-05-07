@@ -281,3 +281,53 @@ on duplicate key update
     remark = values(remark),
     update_by = values(update_by),
     update_time = values(update_time);
+
+--changeset fz:system-menu-schema labels:system context:all
+--comment: 系统动态菜单表
+create table if not exists sys_menu
+(
+    id             bigint primary key comment '主键ID',
+    parent_id      bigint       not null default 0 comment '父菜单ID，根菜单为0',
+    menu_key       varchar(128) not null comment '菜单标识',
+    title          varchar(64)  not null comment '菜单标题',
+    path           varchar(255) null comment '前端路由路径',
+    icon           varchar(64)  not null default '' comment '前端图标名称',
+    permission_key varchar(128) null comment '访问菜单需要的权限码',
+    sort_order     int          not null default 0 comment '排序号',
+    visible        tinyint      not null default 1 comment '是否显示（1显示 0隐藏）',
+    status         tinyint      not null default 0 comment '状态（0正常 1停用）',
+    remark         varchar(255) not null default '' comment '备注',
+    create_by      varchar(64)  not null default '' comment '创建人',
+    create_time    datetime     not null default CURRENT_TIMESTAMP comment '创建时间',
+    update_by      varchar(64)  not null default '' comment '更新人',
+    update_time    datetime     not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间',
+    unique key uk_sys_menu_key (menu_key),
+    key idx_sys_menu_parent_sort (parent_id, sort_order),
+    key idx_sys_menu_permission_key (permission_key)
+) engine = InnoDB comment '系统动态菜单表'
+  collate = utf8mb4_unicode_ci;
+
+--changeset fz:system-menu-seed labels:system context:all
+--comment: 系统默认菜单 seed
+insert into sys_menu (id, parent_id, menu_key, title, path, icon, permission_key, sort_order, visible, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000004001, 0, 'dashboard', '工作台', '/dashboard', 'Home', null, 10, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004002, 0, 'system', '系统管理', null, 'Settings', null, 20, 1, 0, '系统默认菜单分组', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004003, 1930000000000004002, 'system-users', '用户管理', '/system/users', 'Users', 'system:user:view', 10, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004004, 1930000000000004002, 'system-roles', '角色权限', '/system/roles', 'ShieldCheck', 'system:role:view', 20, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004005, 1930000000000004002, 'system-dictionaries', '字典管理', '/system/dictionaries', 'BookOpen', 'system:dict:view', 30, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004006, 1930000000000004002, 'system-audit-logs', '审计日志', '/system/audit-logs', 'ClipboardList', 'system:audit:view', 40, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004007, 1930000000000004002, 'system-permissions', '权限目录', '/system/permissions', 'FolderKey', 'system:permission:view', 50, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004008, 1930000000000004002, 'system-configs', '系统参数', '/system/configs', 'Settings', 'system:config:view', 60, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004009, 0, 'profile', '个人资料', '/profile', 'User', null, 90, 1, 0, '系统默认菜单', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    parent_id = values(parent_id),
+    title = values(title),
+    path = values(path),
+    icon = values(icon),
+    permission_key = values(permission_key),
+    sort_order = values(sort_order),
+    visible = values(visible),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);
