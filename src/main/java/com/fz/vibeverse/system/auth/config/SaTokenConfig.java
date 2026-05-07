@@ -42,8 +42,20 @@ public class SaTokenConfig implements WebMvcConfigurer {
             SaRouter.match("/api/users/**").check(r -> checkUserPermission());
             SaRouter.match("/api/roles/**").check(r -> checkRolePermission());
             SaRouter.match("/api/permissions/**").check(r -> checkPermissionCatalogPermission());
+            SaRouter.match("/api/audit-logs/**").check(r -> checkAuditLogPermission());
             SaRouter.match("/api/dictionaries/**").check(r -> checkDictionaryPermission());
+            SaRouter.match("/api/system-configs/**").check(r -> checkSystemConfigPermission());
         })).addPathPatterns("/**");
+    }
+
+    private void checkSystemConfigPermission() {
+        String requestUri = SaHolder.getRequest().getRequestPath();
+        String method = SaHolder.getRequest().getMethod();
+        if (requestUri == null) {
+            return;
+        }
+        checkResourcePermission(requestUri, method, PermissionConstants.SYSTEM_CONFIG_VIEW,
+                PermissionConstants.SYSTEM_CONFIG_MANAGE);
     }
 
     private void checkDictionaryPermission() {
@@ -63,6 +75,15 @@ public class SaTokenConfig implements WebMvcConfigurer {
             return;
         }
         checkReadOnlyPermission(requestUri, method, PermissionConstants.SYSTEM_PERMISSION_VIEW);
+    }
+
+    private void checkAuditLogPermission() {
+        String requestUri = SaHolder.getRequest().getRequestPath();
+        String method = SaHolder.getRequest().getMethod();
+        if (requestUri == null) {
+            return;
+        }
+        checkReadOnlyPermission(requestUri, method, PermissionConstants.SYSTEM_AUDIT_VIEW);
     }
 
     private void checkRolePermission() {

@@ -10,8 +10,11 @@ public class PermissionConstants {
     public static final String SYSTEM_ROLE_VIEW = "system:role:view";
     public static final String SYSTEM_ROLE_MANAGE = "system:role:manage";
     public static final String SYSTEM_PERMISSION_VIEW = "system:permission:view";
+    public static final String SYSTEM_AUDIT_VIEW = "system:audit:view";
     public static final String SYSTEM_DICT_VIEW = "system:dict:view";
     public static final String SYSTEM_DICT_MANAGE = "system:dict:manage";
+    public static final String SYSTEM_CONFIG_VIEW = "system:config:view";
+    public static final String SYSTEM_CONFIG_MANAGE = "system:config:manage";
 
     private PermissionConstants() {
     }

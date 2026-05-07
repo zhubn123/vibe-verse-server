@@ -225,3 +225,59 @@ on duplicate key update
     remark = values(remark),
     update_by = values(update_by),
     update_time = values(update_time);
+
+--changeset fz:system-config-schema labels:system context:all
+--comment: 系统参数表
+create table if not exists sys_config
+(
+    id           bigint primary key comment '主键ID',
+    config_key   varchar(128)  not null comment '配置键',
+    config_name  varchar(128)  not null comment '配置名称',
+    config_value varchar(1024) not null default '' comment '配置值',
+    value_type   varchar(32)   not null default 'text' comment '值类型（text/number/boolean/json）',
+    status       tinyint       not null default 0 comment '状态（0正常 1停用）',
+    remark       varchar(255)  not null default '' comment '备注',
+    create_by    varchar(64)   not null default '' comment '创建人',
+    create_time  datetime      not null default CURRENT_TIMESTAMP comment '创建时间',
+    update_by    varchar(64)   not null default '' comment '更新人',
+    update_time  datetime      not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间',
+    unique key uk_sys_config_key (config_key),
+    key idx_sys_config_status (status)
+) engine = InnoDB comment '系统参数配置表'
+  collate = utf8mb4_unicode_ci;
+
+--changeset fz:system-admin-feature-seed labels:system context:all
+--comment: 系统管理扩展权限与默认参数 seed
+insert into sys_permission (id, perm_key, perm_name, module, action, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000001008, 'system:audit:view', '审计日志查看', 'system', 'view', 0, '系统内置权限', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000001009, 'system:config:view', '系统参数查看', 'system', 'view', 0, '系统内置权限', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000001010, 'system:config:manage', '系统参数管理', 'system', 'manage', 0, '系统内置权限', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    perm_name = values(perm_name),
+    module = values(module),
+    action = values(action),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+insert into sys_role_permission (id, role_id, permission_id, create_by, create_time, update_by, update_time)
+values (1930000000000002008, 1930000000000000001, 1930000000000001008, 'liquibase', now(), 'liquibase', now()),
+       (1930000000000002009, 1930000000000000001, 1930000000000001009, 'liquibase', now(), 'liquibase', now()),
+       (1930000000000002010, 1930000000000000001, 1930000000000001010, 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+insert into sys_config (id, config_key, config_name, config_value, value_type, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000003001, 'platform.name', '平台名称', 'Vibe Verse', 'text', 0, '用于前端展示的平台名称', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000003002, 'auth.register.enabled', '开放注册', 'true', 'boolean', 0, '控制是否开放账号注册入口', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000003003, 'auth.login.max-fail-count', '登录失败锁定次数', '5', 'number', 0, '连续登录失败达到该次数后锁定账号', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    config_name = values(config_name),
+    config_value = values(config_value),
+    value_type = values(value_type),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);
