@@ -2,6 +2,8 @@ package com.fz.vibeverse.system.user.controller;
 
 import com.fz.vibeverse.common.PageResult;
 import com.fz.vibeverse.exception.Result;
+import com.fz.vibeverse.system.audit.annotation.AuditLog;
+import com.fz.vibeverse.system.audit.model.AuditType;
 import com.fz.vibeverse.system.user.domain.bo.RoleManageSaveBo;
 import com.fz.vibeverse.system.user.domain.query.RoleManageQuery;
 import com.fz.vibeverse.system.user.domain.vo.RoleManageVo;
@@ -45,6 +47,7 @@ public class RoleManageController {
 
     @Operation(summary = "创建角色")
     @PostMapping
+    @AuditLog(module = "ROLE", type = AuditType.CREATE, description = "创建角色")
     public Result<Void> createRole(@RequestBody @Valid RoleManageSaveBo bo) {
         roleManageService.createRole(bo);
         return Result.success();
@@ -52,6 +55,7 @@ public class RoleManageController {
 
     @Operation(summary = "更新角色")
     @PutMapping("/{roleId}")
+    @AuditLog(module = "ROLE", type = AuditType.UPDATE, description = "更新角色")
     public Result<Void> updateRole(@PathVariable Long roleId, @RequestBody @Valid RoleManageSaveBo bo) {
         roleManageService.updateRole(roleId, bo);
         return Result.success();
@@ -59,6 +63,7 @@ public class RoleManageController {
 
     @Operation(summary = "批量删除角色")
     @DeleteMapping
+    @AuditLog(module = "ROLE", type = AuditType.DELETE, description = "删除角色", logResult = false)
     public Result<Void> deleteRoles(@RequestParam List<Long> ids) {
         roleManageService.deleteRoles(ids);
         return Result.success();

@@ -38,6 +38,18 @@ vibe-verse:
       # 无状态 refresh token 签名密钥，生产环境请通过环境变量覆盖
       secret: ${AUTH_REFRESH_TOKEN_SECRET:vibe-verse-local-refresh-secret}
       ttl-seconds: ${AUTH_REFRESH_TOKEN_TTL_SECONDS:604800}
+  audit:
+    enabled: true
+    transport: async
+    async:
+      core-pool-size: 2
+      max-pool-size: 4
+      queue-capacity: 2000
+      thread-name-prefix: audit-
+    mq:
+      exchange: vibe-verse.audit.exchange
+      routing-key: vibe-verse.audit.log
+      queue: vibe-verse.audit.queue
 
 mybatis:
   mapper-locations: classpath*:mapper/**/*.xml

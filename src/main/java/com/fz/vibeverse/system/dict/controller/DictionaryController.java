@@ -2,6 +2,8 @@ package com.fz.vibeverse.system.dict.controller;
 
 import com.fz.vibeverse.common.PageResult;
 import com.fz.vibeverse.exception.Result;
+import com.fz.vibeverse.system.audit.annotation.AuditLog;
+import com.fz.vibeverse.system.audit.model.AuditType;
 import com.fz.vibeverse.system.dict.domain.bo.DictItemSaveBo;
 import com.fz.vibeverse.system.dict.domain.bo.DictTypeSaveBo;
 import com.fz.vibeverse.system.dict.domain.query.DictTypeQuery;
@@ -54,6 +56,7 @@ public class DictionaryController {
 
     @Operation(summary = "创建字典类型")
     @PostMapping
+    @AuditLog(module = "DICT", type = AuditType.CREATE, description = "创建字典类型")
     public Result<Void> createType(@RequestBody @Valid DictTypeSaveBo bo) {
         dictionaryService.createType(bo);
         return Result.success();
@@ -61,6 +64,7 @@ public class DictionaryController {
 
     @Operation(summary = "更新字典类型")
     @PutMapping("/{id}")
+    @AuditLog(module = "DICT", type = AuditType.UPDATE, description = "更新字典类型")
     public Result<Void> updateType(@PathVariable Integer id, @RequestBody @Valid DictTypeSaveBo bo) {
         dictionaryService.updateType(id, bo);
         return Result.success();
@@ -68,6 +72,7 @@ public class DictionaryController {
 
     @Operation(summary = "批量删除字典类型")
     @DeleteMapping
+    @AuditLog(module = "DICT", type = AuditType.DELETE, description = "删除字典类型")
     public Result<Void> deleteTypes(@RequestParam List<Integer> ids) {
         dictionaryService.deleteTypes(ids);
         return Result.success();
@@ -75,6 +80,7 @@ public class DictionaryController {
 
     @Operation(summary = "创建字典项")
     @PostMapping("/{dictCode}/items")
+    @AuditLog(module = "DICT", type = AuditType.CREATE, description = "创建字典项")
     public Result<Void> createItem(
             @PathVariable
             @Size(max = 128, message = "字典编码长度不能超过128位")
@@ -87,6 +93,7 @@ public class DictionaryController {
 
     @Operation(summary = "更新字典项")
     @PutMapping("/items/{id}")
+    @AuditLog(module = "DICT", type = AuditType.UPDATE, description = "更新字典项")
     public Result<Void> updateItem(@PathVariable Integer id, @RequestBody @Valid DictItemSaveBo bo) {
         dictionaryService.updateItem(id, bo);
         return Result.success();
@@ -94,6 +101,7 @@ public class DictionaryController {
 
     @Operation(summary = "批量删除字典项")
     @DeleteMapping("/items")
+    @AuditLog(module = "DICT", type = AuditType.DELETE, description = "删除字典项")
     public Result<Void> deleteItems(@RequestParam List<Integer> ids) {
         dictionaryService.deleteItems(ids);
         return Result.success();
