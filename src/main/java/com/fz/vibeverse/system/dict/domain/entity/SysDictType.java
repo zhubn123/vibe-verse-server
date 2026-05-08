@@ -45,7 +45,7 @@ public class SysDictType extends BaseEntity implements Serializable {
     private String module;
 
     /**
-     * 状态（0正常 1停用）
+     * 状态（1正常 0停用）
      */
     private Integer status;
 

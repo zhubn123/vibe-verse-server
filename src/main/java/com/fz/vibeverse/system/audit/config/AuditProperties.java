@@ -16,17 +16,17 @@ public class AuditProperties {
     private boolean enabled = true;
 
     /**
-     * 传输方式：async / mq。
+     * 传输方式：async / rocketmq。
      */
     private Transport transport = Transport.ASYNC;
 
     private Async async = new Async();
 
-    private Mq mq = new Mq();
+    private RocketMq rocketmq = new RocketMq();
 
     public enum Transport {
         ASYNC,
-        MQ
+        ROCKETMQ
     }
 
     @Data
@@ -38,9 +38,8 @@ public class AuditProperties {
     }
 
     @Data
-    public static class Mq {
-        private String exchange = "vibe-verse.audit.exchange";
-        private String routingKey = "vibe-verse.audit.log";
-        private String queue = "vibe-verse.audit.queue";
+    public static class RocketMq {
+        private String topic = "vibe-verse.audit.topic";
+        private String consumerGroup = "vibe-verse-audit-consumer";
     }
 }

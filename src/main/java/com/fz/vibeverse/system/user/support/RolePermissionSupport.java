@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RolePermissionSupport {
 
-    private static final int STATUS_NORMAL = 0;
+    private static final int STATUS_NORMAL = 1;
 
     private final SysRolePermissionMapper sysRolePermissionMapper;
     private final SysPermissionMapper sysPermissionMapper;

@@ -30,7 +30,7 @@ public class SystemConfigQuery extends PageQuery {
     @Size(max = 128, message = "配置名称长度不能超过128位")
     private String configName;
 
-    @Schema(description = "状态（0正常 1停用）")
+    @Schema(description = "状态（1正常 0停用）")
     @Min(value = 0, message = "状态值非法")
     @Max(value = 1, message = "状态值非法")
     private Integer status;

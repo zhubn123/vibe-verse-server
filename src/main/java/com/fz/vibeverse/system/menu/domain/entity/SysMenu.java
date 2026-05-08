@@ -67,7 +67,7 @@ public class SysMenu extends BaseEntity implements Serializable {
     private Integer visible;
 
     /**
-     * 状态（0正常 1停用）。
+     * 状态（1正常 0停用）。
      */
     private Integer status;
 

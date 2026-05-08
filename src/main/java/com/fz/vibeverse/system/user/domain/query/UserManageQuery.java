@@ -42,9 +42,9 @@ public class UserManageQuery extends PageQuery {
     private String roleKey;
 
     /**
-     * 状态（0正常 1停用 2锁定）
+     * 状态（1正常 0停用 2锁定）
      */
-    @Schema(description = "状态（0正常 1停用 2锁定）")
+    @Schema(description = "状态（1正常 0停用 2锁定）")
     @Min(value = 0, message = "状态值非法")
     @Max(value = 2, message = "状态值非法")
     private Integer status;

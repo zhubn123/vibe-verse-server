@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class MenuServiceImpl implements MenuService {
 
     private static final long ROOT_PARENT_ID = 0L;
-    private static final int STATUS_NORMAL = 0;
+    private static final int STATUS_NORMAL = 1;
     private static final int VISIBLE = 1;
 
     private final SysMenuMapper sysMenuMapper;

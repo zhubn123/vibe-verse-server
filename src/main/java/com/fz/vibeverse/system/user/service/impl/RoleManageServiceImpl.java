@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoleManageServiceImpl implements RoleManageService {
 
-    private static final int STATUS_NORMAL = 0;
+    private static final int STATUS_NORMAL = 1;
     private static final Set<String> BUILT_IN_ROLE_KEYS = Set.of(
             UserConstants.ROLE_ADMIN,
             UserConstants.ROLE_OPERATOR,

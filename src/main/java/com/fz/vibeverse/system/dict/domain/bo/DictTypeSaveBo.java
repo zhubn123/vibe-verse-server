@@ -38,7 +38,7 @@ public class DictTypeSaveBo implements Serializable {
     @Pattern(regexp = "^[A-Za-z0-9_-]+$", message = "所属模块格式非法")
     private String module;
 
-    @Schema(description = "状态（0正常 1停用）")
+    @Schema(description = "状态（1正常 0停用）")
     @NotNull(message = "状态不能为空")
     @Min(value = 0, message = "状态值非法")
     @Max(value = 1, message = "状态值非法")

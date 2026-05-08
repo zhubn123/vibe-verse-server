@@ -30,7 +30,7 @@ public class SystemConfigVo implements Serializable {
     @Schema(description = "值类型")
     private String valueType;
 
-    @Schema(description = "状态（0正常 1停用）")
+    @Schema(description = "状态（1正常 0停用）")
     private Integer status;
 
     @Schema(description = "备注")

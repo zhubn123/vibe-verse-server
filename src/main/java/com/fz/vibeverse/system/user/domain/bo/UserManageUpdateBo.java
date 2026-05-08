@@ -45,9 +45,9 @@ public class UserManageUpdateBo implements Serializable {
     private String phone;
 
     /**
-     * 状态（0正常 1停用 2锁定）
+     * 状态（1正常 0停用 2锁定）
      */
-    @Schema(description = "状态（0正常 1停用 2锁定）", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "状态（1正常 0停用 2锁定）", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "状态不能为空")
     @Min(value = 0, message = "状态值非法")
     @Max(value = 2, message = "状态值非法")

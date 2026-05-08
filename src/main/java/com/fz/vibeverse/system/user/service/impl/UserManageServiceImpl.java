@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserManageServiceImpl implements UserManageService {
 
-    private static final int USER_STATUS_NORMAL = 0;
+    private static final int USER_STATUS_NORMAL = 1;
 
     private final SysUserMapper sysUserMapper;
     private final SysRoleMapper sysRoleMapper;

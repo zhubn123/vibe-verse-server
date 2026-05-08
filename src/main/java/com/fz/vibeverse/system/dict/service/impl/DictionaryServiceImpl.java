@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DictionaryServiceImpl implements DictionaryService {
 
-    private static final int STATUS_NORMAL = 0;
+    private static final int STATUS_NORMAL = 1;
 
     private final SysDictTypeMapper dictTypeMapper;
     private final SysDictItemMapper dictItemMapper;

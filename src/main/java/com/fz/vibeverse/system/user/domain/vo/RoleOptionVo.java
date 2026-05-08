@@ -25,7 +25,7 @@ public class RoleOptionVo implements Serializable {
     @Schema(description = "角色名称")
     private String roleName;
 
-    @Schema(description = "状态（0正常 1停用）")
+    @Schema(description = "状态（1正常 0停用）")
     private Integer status;
 
     @Schema(description = "是否内置角色")

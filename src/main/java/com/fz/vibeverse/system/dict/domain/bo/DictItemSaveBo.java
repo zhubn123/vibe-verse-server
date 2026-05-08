@@ -35,7 +35,7 @@ public class DictItemSaveBo implements Serializable {
     @Min(value = 0, message = "排序号不能小于0")
     private Integer sortOrder;
 
-    @Schema(description = "状态（0正常 1停用）")
+    @Schema(description = "状态（1正常 0停用）")
     @NotNull(message = "状态不能为空")
     @Min(value = 0, message = "状态值非法")
     @Max(value = 1, message = "状态值非法")

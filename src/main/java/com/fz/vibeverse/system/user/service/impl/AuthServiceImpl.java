@@ -51,8 +51,8 @@ import javax.crypto.spec.SecretKeySpec;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private static final int USER_STATUS_NORMAL = 0;
-    private static final int USER_STATUS_DISABLED = 1;
+    private static final int USER_STATUS_NORMAL = 1;
+    private static final int USER_STATUS_DISABLED = 0;
     private static final int USER_STATUS_LOCKED = 2;
     private static final int MAX_LOGIN_FAIL_COUNT = 5;
     private static final int LOCK_MINUTES = 5;

@@ -46,10 +46,14 @@ vibe-verse:
       max-pool-size: 4
       queue-capacity: 2000
       thread-name-prefix: audit-
-    mq:
-      exchange: vibe-verse.audit.exchange
-      routing-key: vibe-verse.audit.log
-      queue: vibe-verse.audit.queue
+    rocketmq:
+      topic: vibe-verse.audit.topic
+      consumer-group: vibe-verse-audit-consumer
+
+rocketmq:
+  name-server: ${ROCKETMQ_NAME_SERVER:localhost:9876}
+  producer:
+    group: ${ROCKETMQ_PRODUCER_GROUP:vibe-verse-audit-producer}
 
 mybatis:
   mapper-locations: classpath*:mapper/**/*.xml

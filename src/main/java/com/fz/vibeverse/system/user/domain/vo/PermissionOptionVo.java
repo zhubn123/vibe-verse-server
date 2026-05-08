@@ -33,7 +33,7 @@ public class PermissionOptionVo implements Serializable {
     @Schema(description = "动作标识")
     private String action;
 
-    @Schema(description = "状态（0正常 1停用）")
+    @Schema(description = "状态（1正常 0停用）")
     private Integer status;
 
     @Schema(description = "备注")

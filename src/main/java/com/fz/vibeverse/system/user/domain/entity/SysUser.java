@@ -58,7 +58,7 @@ public class SysUser extends BaseEntity implements Serializable {
     private String phone;
 
     /**
-     * 状态（0正常 1停用 2锁定）
+     * 状态（1正常 0停用 2锁定）
      */
     private Integer status;
 

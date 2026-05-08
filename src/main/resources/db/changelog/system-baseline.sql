@@ -331,3 +331,63 @@ on duplicate key update
     remark = values(remark),
     update_by = values(update_by),
     update_time = values(update_time);
+
+--changeset fz:system-status-normal-one labels:system context:all
+--comment: 统一状态语义为 1正常 0停用
+alter table sys_user
+    modify column status tinyint not null default 1 comment '状态（1正常 0停用 2锁定）';
+alter table sys_role
+    modify column status tinyint not null default 1 comment '状态（1正常 0停用）';
+alter table sys_permission
+    modify column status tinyint not null default 1 comment '状态（1正常 0停用）';
+alter table sys_dict_type
+    modify column status tinyint not null default 1 comment '状态（1正常 0停用）';
+alter table sys_dict_item
+    modify column status tinyint not null default 1 comment '状态（1正常 0停用）';
+alter table sys_config
+    modify column status tinyint not null default 1 comment '状态（1正常 0停用）';
+alter table sys_menu
+    modify column status tinyint not null default 1 comment '状态（1正常 0停用）';
+
+update sys_user set status = 9 where status = 0;
+update sys_user set status = 0 where status = 1;
+update sys_user set status = 1 where status = 9;
+
+update sys_role set status = 9 where status = 0;
+update sys_role set status = 0 where status = 1;
+update sys_role set status = 1 where status = 9;
+
+update sys_permission set status = 9 where status = 0;
+update sys_permission set status = 0 where status = 1;
+update sys_permission set status = 1 where status = 9;
+
+update sys_dict_type set status = 9 where status = 0;
+update sys_dict_type set status = 0 where status = 1;
+update sys_dict_type set status = 1 where status = 9;
+
+update sys_dict_item set status = 9 where status = 0;
+update sys_dict_item set status = 0 where status = 1;
+update sys_dict_item set status = 1 where status = 9;
+
+update sys_config set status = 9 where status = 0;
+update sys_config set status = 0 where status = 1;
+update sys_config set status = 1 where status = 9;
+
+update sys_menu set status = 9 where status = 0;
+update sys_menu set status = 0 where status = 1;
+update sys_menu set status = 1 where status = 9;
+
+update sys_dict_item
+set item_value = '__tmp__', item_label = '正常'
+where dict_code = 'common_enable_status'
+  and item_value = '0';
+
+update sys_dict_item
+set item_value = '0', item_label = '停用'
+where dict_code = 'common_enable_status'
+  and item_value = '1';
+
+update sys_dict_item
+set item_value = '1', item_label = '正常'
+where dict_code = 'common_enable_status'
+  and item_value = '__tmp__';

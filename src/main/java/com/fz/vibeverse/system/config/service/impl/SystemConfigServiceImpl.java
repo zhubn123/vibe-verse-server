@@ -29,7 +29,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class SystemConfigServiceImpl implements SystemConfigService {
 
-    private static final int STATUS_NORMAL = 0;
+    private static final int STATUS_NORMAL = 1;
 
     private final SysConfigMapper sysConfigMapper;
 
