@@ -391,3 +391,39 @@ update sys_dict_item
 set item_value = '1', item_label = '正常'
 where dict_code = 'common_enable_status'
   and item_value = '__tmp__';
+
+--changeset fz:system-menu-manage-seed labels:system context:all
+--comment: 菜单管理权限与默认菜单 seed
+insert into sys_permission (id, perm_key, perm_name, module, action, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000001011, 'system:menu:view', '菜单查看', 'system', 'view', 1, '系统内置权限', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000001012, 'system:menu:manage', '菜单管理', 'system', 'manage', 1, '系统内置权限', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    perm_name = values(perm_name),
+    module = values(module),
+    action = values(action),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+insert into sys_role_permission (id, role_id, permission_id, create_by, create_time, update_by, update_time)
+values (1930000000000002011, 1930000000000000001, 1930000000000001011, 'liquibase', now(), 'liquibase', now()),
+       (1930000000000002012, 1930000000000000001, 1930000000000001012, 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+insert into sys_menu (id, parent_id, menu_key, title, path, icon, permission_key, sort_order, visible, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000004010, 1930000000000004002, 'system-menus', '菜单管理', '/system/menus', 'FolderKey', 'system:menu:view', 55, 1, 1, '系统默认菜单', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    parent_id = values(parent_id),
+    title = values(title),
+    path = values(path),
+    icon = values(icon),
+    permission_key = values(permission_key),
+    sort_order = values(sort_order),
+    visible = values(visible),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);

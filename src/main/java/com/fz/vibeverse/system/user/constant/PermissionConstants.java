@@ -13,6 +13,8 @@ public class PermissionConstants {
     public static final String SYSTEM_AUDIT_VIEW = "system:audit:view";
     public static final String SYSTEM_DICT_VIEW = "system:dict:view";
     public static final String SYSTEM_DICT_MANAGE = "system:dict:manage";
+    public static final String SYSTEM_MENU_VIEW = "system:menu:view";
+    public static final String SYSTEM_MENU_MANAGE = "system:menu:manage";
     public static final String SYSTEM_CONFIG_VIEW = "system:config:view";
     public static final String SYSTEM_CONFIG_MANAGE = "system:config:manage";
 

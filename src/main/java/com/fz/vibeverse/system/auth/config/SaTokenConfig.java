@@ -44,8 +44,22 @@ public class SaTokenConfig implements WebMvcConfigurer {
             SaRouter.match("/api/permissions/**").check(r -> checkPermissionCatalogPermission());
             SaRouter.match("/api/audit-logs/**").check(r -> checkAuditLogPermission());
             SaRouter.match("/api/dictionaries/**").check(r -> checkDictionaryPermission());
+            SaRouter.match("/api/menus/**").check(r -> checkMenuPermission());
             SaRouter.match("/api/system-configs/**").check(r -> checkSystemConfigPermission());
         })).addPathPatterns("/**");
+    }
+
+    private void checkMenuPermission() {
+        String requestUri = SaHolder.getRequest().getRequestPath();
+        String method = SaHolder.getRequest().getMethod();
+        if (requestUri == null) {
+            return;
+        }
+        if ("/api/menus/current".equals(requestUri)) {
+            return;
+        }
+        checkResourcePermission(requestUri, method, PermissionConstants.SYSTEM_MENU_VIEW,
+                PermissionConstants.SYSTEM_MENU_MANAGE);
     }
 
     private void checkSystemConfigPermission() {
