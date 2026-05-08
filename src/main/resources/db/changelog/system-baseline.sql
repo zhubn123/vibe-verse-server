@@ -427,3 +427,150 @@ on duplicate key update
     remark = values(remark),
     update_by = values(update_by),
     update_time = values(update_time);
+
+--changeset fz:oss-object-schema labels:system context:all
+--comment: 通用对象存储元数据表
+create table if not exists oss_object
+(
+    id              bigint primary key comment '主键ID',
+    bucket          varchar(64)   not null comment '逻辑 bucket',
+    object_key      varchar(255)  not null comment '对象 key',
+    original_name   varchar(255)  not null comment '原始文件名',
+    extension       varchar(32)   not null default '' comment '扩展名',
+    content_type    varchar(128)  null comment 'MIME 类型',
+    size            bigint        not null default 0 comment '文件大小，单位字节',
+    checksum_sha256 char(64)      null comment 'SHA-256 校验和',
+    storage_type    varchar(32)   not null default 'LOCAL' comment '存储实现类型',
+    storage_path    varchar(512)  not null comment '底层存储路径',
+    access_policy   varchar(32)   not null default 'private' comment '访问策略',
+    status          tinyint       not null default 1 comment '状态（1正常 0停用）',
+    remark          varchar(255)  not null default '' comment '备注',
+    create_by       varchar(64)   not null default '' comment '创建人',
+    create_time     datetime      not null default CURRENT_TIMESTAMP comment '创建时间',
+    update_by       varchar(64)   not null default '' comment '更新人',
+    update_time     datetime      not null default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP comment '更新时间',
+    unique key uk_oss_object_key (object_key),
+    key idx_oss_object_bucket (bucket),
+    key idx_oss_object_status_create_time (status, create_time),
+    key idx_oss_object_checksum (checksum_sha256)
+) engine = InnoDB comment '通用对象存储元数据表'
+  collate = utf8mb4_unicode_ci;
+
+--changeset fz:oss-object-feature-seed labels:system context:all
+--comment: 文件管理权限与菜单 seed
+insert into sys_permission (id, perm_key, perm_name, module, action, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000001013, 'system:oss:view', '文件查看', 'system', 'view', 1, '系统内置权限', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000001014, 'system:oss:manage', '文件管理', 'system', 'manage', 1, '系统内置权限', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    perm_name = values(perm_name),
+    module = values(module),
+    action = values(action),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+insert into sys_role_permission (id, role_id, permission_id, create_by, create_time, update_by, update_time)
+values (1930000000000002013, 1930000000000000001, 1930000000000001013, 'liquibase', now(), 'liquibase', now()),
+       (1930000000000002014, 1930000000000000001, 1930000000000001014, 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+insert into sys_menu (id, parent_id, menu_key, title, path, icon, permission_key, sort_order, visible, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000004011, 1930000000000004002, 'system-files', '文件管理', '/system/files', 'FileUp', 'system:oss:view', 70, 1, 1, '系统默认菜单', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    parent_id = values(parent_id),
+    title = values(title),
+    path = values(path),
+    icon = values(icon),
+    permission_key = values(permission_key),
+    sort_order = values(sort_order),
+    visible = values(visible),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+--changeset fz:system-menu-split-seed labels:system context:all
+--comment: 拆分系统管理菜单分组
+insert into sys_menu (id, parent_id, menu_key, title, path, icon, permission_key, sort_order, visible, status, remark, create_by, create_time, update_by, update_time)
+values (1930000000000004012, 0, 'access-management', '权限管理', null, 'ShieldCheck', null, 20, 1, 1, '系统默认菜单分组', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004013, 0, 'platform-settings', '平台设置', null, 'Settings', null, 30, 1, 1, '系统默认菜单分组', 'liquibase', now(), 'liquibase', now()),
+       (1930000000000004014, 0, 'operations-center', '运维中心', null, 'ToolCase', null, 40, 1, 1, '系统默认菜单分组', 'liquibase', now(), 'liquibase', now())
+on duplicate key update
+    parent_id = values(parent_id),
+    title = values(title),
+    path = values(path),
+    icon = values(icon),
+    permission_key = values(permission_key),
+    sort_order = values(sort_order),
+    visible = values(visible),
+    status = values(status),
+    remark = values(remark),
+    update_by = values(update_by),
+    update_time = values(update_time);
+
+update sys_menu
+set visible = 0,
+    status = 0,
+    update_by = 'liquibase',
+    update_time = now()
+where menu_key = 'system';
+
+update sys_menu
+set parent_id = 1930000000000004012,
+    sort_order = case menu_key
+        when 'system-users' then 10
+        when 'system-roles' then 20
+        when 'system-permissions' then 30
+        when 'system-menus' then 40
+        else sort_order
+    end,
+    update_by = 'liquibase',
+    update_time = now()
+where menu_key in ('system-users', 'system-roles', 'system-permissions', 'system-menus');
+
+update sys_menu
+set parent_id = 1930000000000004013,
+    sort_order = case menu_key
+        when 'system-dictionaries' then 10
+        when 'system-configs' then 20
+        else sort_order
+    end,
+    update_by = 'liquibase',
+    update_time = now()
+where menu_key in ('system-dictionaries', 'system-configs');
+
+update sys_menu
+set parent_id = 1930000000000004014,
+    sort_order = case menu_key
+        when 'system-audit-logs' then 10
+        when 'system-files' then 20
+        else sort_order
+    end,
+    update_by = 'liquibase',
+    update_time = now()
+where menu_key in ('system-audit-logs', 'system-files');
+
+--changeset fz:system-menu-nested-split-seed labels:system context:all
+--comment: 将拆分后的系统菜单收回系统管理分组
+update sys_menu
+set visible = 1,
+    status = 1,
+    sort_order = 20,
+    update_by = 'liquibase',
+    update_time = now()
+where menu_key = 'system';
+
+update sys_menu
+set parent_id = 1930000000000004002,
+    sort_order = case menu_key
+        when 'access-management' then 10
+        when 'platform-settings' then 20
+        when 'operations-center' then 30
+        else sort_order
+    end,
+    update_by = 'liquibase',
+    update_time = now()
+where menu_key in ('access-management', 'platform-settings', 'operations-center');

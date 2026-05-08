@@ -17,6 +17,8 @@ public class PermissionConstants {
     public static final String SYSTEM_MENU_MANAGE = "system:menu:manage";
     public static final String SYSTEM_CONFIG_VIEW = "system:config:view";
     public static final String SYSTEM_CONFIG_MANAGE = "system:config:manage";
+    public static final String SYSTEM_OSS_VIEW = "system:oss:view";
+    public static final String SYSTEM_OSS_MANAGE = "system:oss:manage";
 
     private PermissionConstants() {
     }

@@ -155,6 +155,9 @@ public class MenuServiceImpl implements MenuService {
         List<MenuVo> result = new ArrayList<>();
         for (SysMenu menu : children) {
             List<MenuVo> childVos = buildMenuTree(menu.getId(), childrenMap, permissionKeys);
+            if (StringUtils.isBlank(menu.getPath()) && childVos.isEmpty()) {
+                continue;
+            }
             boolean ownAllowed = hasMenuPermission(menu, permissionKeys);
             if (!ownAllowed && childVos.isEmpty()) {
                 continue;

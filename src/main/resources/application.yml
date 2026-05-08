@@ -6,6 +6,10 @@ spring:
     name: vibe-verse-server
   profiles:
     active: dev
+  servlet:
+    multipart:
+      max-file-size: ${UPLOAD_MAX_FILE_SIZE:50MB}
+      max-request-size: ${UPLOAD_MAX_REQUEST_SIZE:50MB}
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/db.changelog-master.yaml
@@ -49,6 +53,12 @@ vibe-verse:
     rocketmq:
       topic: vibe-verse.audit.topic
       consumer-group: vibe-verse-audit-consumer
+  oss:
+    storage-type: local
+    default-bucket: attachment
+    max-file-size: ${OSS_MAX_FILE_SIZE:50MB}
+    local:
+      root-path: ${OSS_LOCAL_ROOT_PATH:}
 
 rocketmq:
   name-server: ${ROCKETMQ_NAME_SERVER:localhost:9876}

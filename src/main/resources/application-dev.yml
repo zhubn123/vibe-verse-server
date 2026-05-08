@@ -4,3 +4,8 @@ spring:
     url: ${DB_URL:jdbc:mysql://localhost:3306/vibe_verse?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
+
+vibe-verse:
+  oss:
+    local:
+      root-path: ${OSS_LOCAL_ROOT_PATH:./data/oss}
