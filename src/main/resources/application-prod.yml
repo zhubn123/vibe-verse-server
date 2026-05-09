@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:jdbc:mysql://vibe-verse-mysql:3306/vibe_verse?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
+    username: ${DB_USERNAME:vibe_verse}
+    password: ${DB_PASSWORD:}
+
+vibe-verse:
+  audit:
+    transport: ${AUDIT_TRANSPORT:async}
+  oss:
+    local:
+      root-path: ${OSS_LOCAL_ROOT_PATH:/app/data/oss}

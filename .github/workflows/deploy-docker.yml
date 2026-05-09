@@ -1,0 +1,155 @@
+name: Deploy Docker
+
+on:
+  workflow_dispatch:
+    inputs:
+      web_ref:
+        description: "vibe-verse-web branch, tag, or commit to deploy"
+        required: true
+        default: "main"
+
+concurrency:
+  group: deploy-vibe-verse-docker
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      DEPLOY_DIR: /srv/vibe-verse/docker
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout server
+        uses: actions/checkout@v5
+        with:
+          path: server
+
+      - name: Checkout web
+        uses: actions/checkout@v5
+        with:
+          repository: zhubn123/vibe-verse-web
+          ref: ${{ inputs.web_ref }}
+          path: web
+
+      - name: Validate required secrets
+        shell: bash
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          DB_PASSWORD: ${{ secrets.VIBE_VERSE_DB_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.VIBE_VERSE_MYSQL_ROOT_PASSWORD }}
+          AUTH_REFRESH_TOKEN_SECRET: ${{ secrets.VIBE_VERSE_AUTH_REFRESH_TOKEN_SECRET }}
+        run: |
+          set -euo pipefail
+          missing=0
+          check_secret() {
+            local secret_name="$1"
+            local secret_value="$2"
+            if [ -z "${secret_value}" ]; then
+              echo "::error::Missing required secret: ${secret_name}"
+              missing=1
+            fi
+          }
+          check_secret SERVER_HOST "${SERVER_HOST}"
+          check_secret SERVER_USER "${SERVER_USER}"
+          check_secret SERVER_SSH_KEY "${SERVER_SSH_KEY}"
+          check_secret VIBE_VERSE_DB_PASSWORD "${DB_PASSWORD}"
+          check_secret VIBE_VERSE_MYSQL_ROOT_PASSWORD "${MYSQL_ROOT_PASSWORD}"
+          check_secret VIBE_VERSE_AUTH_REFRESH_TOKEN_SECRET "${AUTH_REFRESH_TOKEN_SECRET}"
+          exit "${missing}"
+
+      - name: Build Docker images
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build -t "vibe-verse-server:${IMAGE_TAG}" ./server
+          docker build -t "vibe-verse-web:${IMAGE_TAG}" ./web
+
+      - name: Pack Docker images
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker save "vibe-verse-server:${IMAGE_TAG}" "vibe-verse-web:${IMAGE_TAG}" | gzip > "vibe-verse-images-${IMAGE_TAG}.tar.gz"
+
+      - name: Create deploy env
+        shell: bash
+        env:
+          DB_USERNAME: ${{ secrets.VIBE_VERSE_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.VIBE_VERSE_DB_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.VIBE_VERSE_MYSQL_ROOT_PASSWORD }}
+          AUTH_REFRESH_TOKEN_SECRET: ${{ secrets.VIBE_VERSE_AUTH_REFRESH_TOKEN_SECRET }}
+          WEB_HOST_PORT: ${{ secrets.VIBE_VERSE_WEB_PORT }}
+          SERVER_HOST_PORT: ${{ secrets.VIBE_VERSE_SERVER_PORT }}
+        run: |
+          set -euo pipefail
+          DB_USERNAME="${DB_USERNAME:-vibe_verse}"
+          WEB_HOST_PORT="${WEB_HOST_PORT:-18080}"
+          SERVER_HOST_PORT="${SERVER_HOST_PORT:-18081}"
+
+          cat > deploy.env <<EOF
+          IMAGE_TAG=${IMAGE_TAG}
+          MYSQL_DATABASE=vibe_verse
+          DB_USERNAME=${DB_USERNAME}
+          DB_PASSWORD=${DB_PASSWORD}
+          MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+          AUTH_REFRESH_TOKEN_SECRET=${AUTH_REFRESH_TOKEN_SECRET}
+          WEB_HOST_PORT=${WEB_HOST_PORT}
+          SERVER_HOST_PORT=${SERVER_HOST_PORT}
+          AUDIT_TRANSPORT=async
+          EOF
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Trust server host key
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.SERVER_PORT || '22' }}" "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Prepare remote directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -p "${{ secrets.SERVER_PORT || '22' }}" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" \
+            "mkdir -p '${DEPLOY_DIR}'"
+
+      - name: Upload deployment bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          scp -P "${{ secrets.SERVER_PORT || '22' }}" \
+            "vibe-verse-images-${IMAGE_TAG}.tar.gz" \
+            "server/deploy/docker-compose.yml" \
+            "deploy.env" \
+            "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${DEPLOY_DIR}/"
+
+      - name: Load images and restart containers
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -p "${{ secrets.SERVER_PORT || '22' }}" "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" << EOF
+          set -euo pipefail
+          cd "${DEPLOY_DIR}"
+
+          if docker compose version >/dev/null 2>&1; then
+            COMPOSE="docker compose"
+          elif command -v docker-compose >/dev/null 2>&1; then
+            COMPOSE="docker-compose"
+          else
+            echo "Docker Compose is not installed on the server."
+            exit 1
+          fi
+
+          docker load -i "vibe-verse-images-${IMAGE_TAG}.tar.gz"
+          \${COMPOSE} --env-file deploy.env -f docker-compose.yml --project-name vibe-verse up -d --remove-orphans
+          \${COMPOSE} --env-file deploy.env -f docker-compose.yml --project-name vibe-verse ps
+          EOF

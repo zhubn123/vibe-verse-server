@@ -1,0 +1,11 @@
+target/
+.git/
+.github/
+.idea/
+.vscode/
+data/
+logs/
+*.log
+*.tmp
+*.temp
+src/main/resources/application-local.yml
