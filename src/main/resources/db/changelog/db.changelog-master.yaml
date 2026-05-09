@@ -2,3 +2,9 @@ databaseChangeLog:
   - include:
       file: db/changelog/system-baseline.sql
       relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/system/20260508-data-exchange.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/sql/system/20260509-reminder.sql
+      relativeToChangelogFile: false

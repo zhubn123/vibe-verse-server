@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -102,28 +103,42 @@ public class OssObjectServiceImpl implements OssObjectService {
             throw ApiException.badRequest("文件大小不能超过 " + ossProperties.getMaxFileSize());
         }
 
+        try {
+            return saveObject(bucket, file.getOriginalFilename(), file.getContentType(), file.getInputStream(), remark);
+        } catch (IOException ex) {
+            throw ApiException.business("读取上传文件失败：" + ex.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public OssObjectVo saveObject(String bucket, String originalName, String contentType, InputStream inputStream, String remark) {
+        if (inputStream == null) {
+            throw ApiException.badRequest("文件内容不能为空");
+        }
+
         String normalizedBucket = normalizeBucket(bucket);
-        String originalName = normalizeOriginalName(file.getOriginalFilename());
-        String extension = resolveExtension(originalName);
-        String contentType = truncate(normalizeOptional(file.getContentType()), MAX_CONTENT_TYPE_LENGTH);
+        String normalizedOriginalName = normalizeOriginalName(originalName);
+        String extension = resolveExtension(normalizedOriginalName);
+        String normalizedContentType = truncate(normalizeOptional(contentType), MAX_CONTENT_TYPE_LENGTH);
         String normalizedRemark = truncate(StringUtils.defaultString(normalizeOptional(remark)), MAX_REMARK_LENGTH);
 
         StoredObject storedObject = null;
         try {
             storedObject = objectStorage.store(new StoreObjectRequest(
                     normalizedBucket,
-                    originalName,
+                    normalizedOriginalName,
                     extension,
-                    contentType,
-                    file.getInputStream()
+                    normalizedContentType,
+                    inputStream
             ));
 
             OssObject object = new OssObject();
             object.setBucket(normalizedBucket);
             object.setObjectKey(storedObject.objectKey());
-            object.setOriginalName(originalName);
+            object.setOriginalName(normalizedOriginalName);
             object.setExtension(extension);
-            object.setContentType(contentType);
+            object.setContentType(normalizedContentType);
             object.setSize(storedObject.size());
             object.setChecksumSha256(storedObject.checksumSha256());
             object.setStorageType(storedObject.storageType());
@@ -133,8 +148,6 @@ public class OssObjectServiceImpl implements OssObjectService {
             object.setRemark(normalizedRemark);
             ossObjectMapper.insert(object);
             return toVo(object);
-        } catch (IOException ex) {
-            throw ApiException.business("读取上传文件失败：" + ex.getMessage());
         } catch (RuntimeException ex) {
             if (storedObject != null) {
                 objectStorage.delete(storedObject.storagePath());

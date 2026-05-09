@@ -9,6 +9,7 @@ import com.fz.vibeverse.exception.ApiException;
 import com.fz.vibeverse.system.config.domain.bo.SystemConfigSaveBo;
 import com.fz.vibeverse.system.config.domain.entity.SysConfig;
 import com.fz.vibeverse.system.config.domain.query.SystemConfigQuery;
+import com.fz.vibeverse.system.config.domain.vo.AppConfigVo;
 import com.fz.vibeverse.system.config.domain.vo.SystemConfigVo;
 import com.fz.vibeverse.system.config.mapper.SysConfigMapper;
 import com.fz.vibeverse.system.config.service.SystemConfigService;
@@ -30,8 +31,17 @@ import java.util.Objects;
 public class SystemConfigServiceImpl implements SystemConfigService {
 
     private static final int STATUS_NORMAL = 1;
+    private static final String DEFAULT_PLATFORM_NAME = "Vibe Verse";
+    private static final String PLATFORM_NAME_KEY = "platform.name";
 
     private final SysConfigMapper sysConfigMapper;
+
+    @Override
+    public AppConfigVo getAppConfig() {
+        AppConfigVo vo = new AppConfigVo();
+        vo.setPlatformName(StringUtils.defaultIfBlank(getConfigValue(PLATFORM_NAME_KEY), DEFAULT_PLATFORM_NAME));
+        return vo;
+    }
 
     @Override
     public PageResult<SystemConfigVo> queryConfigPage(SystemConfigQuery query) {
@@ -155,6 +165,11 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     private String normalizeOptional(String input) {
         return StringUtils.isBlank(input) ? null : input.trim();
+    }
+
+    private String getConfigValue(String configKey) {
+        SysConfig config = sysConfigMapper.selectByColumn(SysConfig::getConfigKey, normalizeConfigKey(configKey));
+        return config == null ? null : normalizeOptional(config.getConfigValue());
     }
 
     private SystemConfigVo toVo(SysConfig config) {

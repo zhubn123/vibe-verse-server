@@ -3,6 +3,7 @@ package com.fz.vibeverse.system.config.service;
 import com.fz.vibeverse.common.PageResult;
 import com.fz.vibeverse.system.config.domain.bo.SystemConfigSaveBo;
 import com.fz.vibeverse.system.config.domain.query.SystemConfigQuery;
+import com.fz.vibeverse.system.config.domain.vo.AppConfigVo;
 import com.fz.vibeverse.system.config.domain.vo.SystemConfigVo;
 
 import java.util.List;
@@ -11,6 +12,13 @@ import java.util.List;
  * 系统参数配置服务。
  */
 public interface SystemConfigService {
+
+    /**
+     * 查询前端应用展示配置。
+     *
+     * @return 应用展示配置
+     */
+    AppConfigVo getAppConfig();
 
     /**
      * 分页查询系统参数配置。

@@ -6,6 +6,7 @@ import com.fz.vibeverse.system.oss.domain.vo.OssObjectContent;
 import com.fz.vibeverse.system.oss.domain.vo.OssObjectVo;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -18,6 +19,8 @@ public interface OssObjectService {
     OssObjectVo getObjectDetail(Long id);
 
     OssObjectVo uploadObject(String bucket, MultipartFile file, String remark);
+
+    OssObjectVo saveObject(String bucket, String originalName, String contentType, InputStream inputStream, String remark);
 
     OssObjectContent loadObjectContent(Long id);
 

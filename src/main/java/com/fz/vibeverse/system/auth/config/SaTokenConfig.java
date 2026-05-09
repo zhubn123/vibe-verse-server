@@ -30,6 +30,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
                             "/api/auth/login",
                             "/api/auth/register",
                             "/api/auth/refresh",
+                            "/api/app-config",
                             "/api/health",
                             "/v3/api-docs",
                             "/v3/api-docs/**",
@@ -47,7 +48,18 @@ public class SaTokenConfig implements WebMvcConfigurer {
             SaRouter.match("/api/menus/**").check(r -> checkMenuPermission());
             SaRouter.match("/api/system-configs/**").check(r -> checkSystemConfigPermission());
             SaRouter.match("/api/oss-objects/**").check(r -> checkOssObjectPermission());
+            SaRouter.match("/api/data-exchange-tasks/**").check(r -> checkDataExchangeTaskPermission());
         })).addPathPatterns("/**");
+    }
+
+    private void checkDataExchangeTaskPermission() {
+        String requestUri = SaHolder.getRequest().getRequestPath();
+        String method = SaHolder.getRequest().getMethod();
+        if (requestUri == null) {
+            return;
+        }
+        checkResourcePermission(requestUri, method, PermissionConstants.SYSTEM_EXCHANGE_VIEW,
+                PermissionConstants.SYSTEM_EXCHANGE_MANAGE);
     }
 
     private void checkOssObjectPermission() {
